@@ -64,6 +64,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 965e421d30d6a2a419dfd5b3597456b8, type: 2}
+  - {fileID: 2100000, guid: b42934ea027903d44a8bc7a72a138a92, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -97,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a39d6363fbe2f1347ad3e1e49a812325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deathManager: {fileID: 0}
   _InventoryShape: {x: 2, y: 2}
   _CollisionSound: {fileID: 0}
   _UseSound: {fileID: 0}

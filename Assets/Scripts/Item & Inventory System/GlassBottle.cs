@@ -13,10 +13,13 @@ public class GlassBottle : MonoBehaviour, IThrowableItem
     public float _DamageValue;
 
     [SerializeField]
-    public AudioSource _BreakSound;
+    public AudioClip _BreakSound;
 
     [SerializeField]
     public Color _InventoryColor = new Color(0.0f, 0.0f, 1.0f, 1.0f);
+
+    [SerializeField]
+    public float _LaunchVelocity = 700;
 
     public float damageValue
     {
@@ -30,7 +33,7 @@ public class GlassBottle : MonoBehaviour, IThrowableItem
         }
     }
 
-    public AudioSource breakSound
+    public AudioClip breakSound
     {
         get
         {
@@ -84,10 +87,14 @@ public class GlassBottle : MonoBehaviour, IThrowableItem
         Debug.Log("Looks like an empty bottle.");
     }
 
-    public bool throwItem()
+    public bool throwItem(Vector3 forwardUnitVector)
     {
         // TODO: Throwing Implementation.
         Debug.Log("Throw Glass Bottle");
+
+        this.gameObject.SetActive(true);
+        this.GetComponent<Rigidbody>().AddForce(forwardUnitVector * _LaunchVelocity);
+
         return true;
     }
 
@@ -102,4 +109,32 @@ public class GlassBottle : MonoBehaviour, IThrowableItem
     {
 
     }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        Debug.Log("Glass Bottle Collision Exit!");
+        if (collision.gameObject.tag != "Player" && collision.gameObject.tag != "PlayerParent")
+        {
+            // Play the break sound here..
+            // ..
+
+            if (collision.gameObject.tag == "Light")
+                Destroy(collision.gameObject);
+                
+            AudioSource.PlayClipAtPoint(breakSound, transform.position);
+
+            PlayerInformation playerState = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInformation>();
+
+            playerState.SetThrownObjectIntensity(6);
+            playerState.SetThrownObjectPosition(transform.position);
+
+
+            // Debugging
+            Debug.Log("Glass Bottle Collide!");
+
+            // Destroy this gameobject.
+            Destroy(this.gameObject);
+        }
+    }
+
 }

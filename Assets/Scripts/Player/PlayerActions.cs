@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 // rough script for storing actions unrelated to movement
 public class PlayerActions : MonoBehaviour
@@ -19,7 +18,12 @@ public class PlayerActions : MonoBehaviour
 
     private int itemLayerMask = 1 << itemLayerNum;
 
+    public DeathManager deathManager;
+
     private PlayerInformation playerInformation;
+
+    [SerializeField]
+    public Camera _PlayerCamera;
 
     void Start()
     {
@@ -58,9 +62,9 @@ public class PlayerActions : MonoBehaviour
         {
             interactHandler(KeyCode.I);
         }
-        else if (Input.GetKeyDown(KeyCode.K))
+        else if (Input.GetKeyDown(KeyCode.P))
         {
-            interactHandler(KeyCode.K);
+            interactHandler(KeyCode.P);
         }
 
     }
@@ -132,8 +136,11 @@ public class PlayerActions : MonoBehaviour
             // Make sure the Item is a IThrowableItem then Throw it.
             if (ThrownItem.GetComponent<IInteractable>() is IThrowableItem)
             {
+
+                ThrownItem.gameObject.transform.position = _PlayerCamera.transform.position;
+
                 // Execute Action: Throw
-                if (playerInformation.GetItemContext().executeThrow())
+                if (playerInformation.GetItemContext().executeThrow(_PlayerCamera.transform.forward))
                 {
                     // Remove Throwable Item from Inventory.
                     playerInformation.GetStorageItem().GetInventorySystem().removeItem(ThrownItem);
@@ -174,7 +181,6 @@ public class PlayerActions : MonoBehaviour
                 {
                     // Remove Throwable Item from Inventory.
                     playerInformation.GetStorageItem().GetInventorySystem().removeItem(ConsumedItem);
-
                 }
             }
 
@@ -225,8 +231,9 @@ public class PlayerActions : MonoBehaviour
                 case KeyCode.I:
                     itemThrow();
                     break;
-                case KeyCode.K:
+                case KeyCode.P:
                     itemConsume();
+                    deathManager.RemoveDamagedScreen();
                     break;
             }
         }

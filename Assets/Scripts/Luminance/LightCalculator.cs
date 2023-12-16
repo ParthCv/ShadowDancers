@@ -10,10 +10,13 @@ public class LightCalculator : MonoBehaviour
 
     private PlayerInformation player;
 
+    private bool isPlayerInside;
+
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInformation>();
+        isPlayerInside = false;
     }
 
     // Update is called once per frame
@@ -46,6 +49,7 @@ public class LightCalculator : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
+            isPlayerInside = true;
             Ray ray = new Ray(transform.position, calculateDirection(transform.position, other.transform.position));
             RaycastHit raycastHit;
             Physics.Raycast(ray, out raycastHit);
@@ -60,7 +64,14 @@ public class LightCalculator : MonoBehaviour
     }
 
     private void OnTriggerExit(Collider other) {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player") {
+            isPlayerInside = false;
+            player.SetLuminance(0f);
+        }
+    }
+
+    private void OnDestroy() {
+        if (isPlayerInside)
             player.SetLuminance(0f);
     }
 

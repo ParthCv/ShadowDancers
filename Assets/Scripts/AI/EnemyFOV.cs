@@ -78,7 +78,7 @@ public class EnemyFOV : MonoBehaviour
     
     public float GetRadius() {
         // return m_radius;
-        return m_radius * playerState.GetLuminance() + 5f;
+        return m_radius * playerState.GetLuminance() + 2f;
     }
 
     public float GetAngle() {

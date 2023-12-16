@@ -12,8 +12,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private NavMeshAgent m_Agent;
     
-    [SerializeField]
-    private GameObject m_player;
+    public GameObject m_player;
 
     [SerializeField]
     private EnemyFOV m_fov;
@@ -101,17 +100,34 @@ public class EnemyAI : MonoBehaviour
 
         if (m_fov.seesPlayer)
         {
-            ChaseThePlayer();
+            ChaseThePlayer(m_fov.player.transform.position);
+        }
+
+        Vector3 positionToChase = Vector3.zero;
+        float intensityToChase = 0.0f;
+
+        PlayerInformation playerState = m_player.GetComponent<PlayerInformation>();
+        if (IsPlayerInAudableRange() && IsThrownObjectInAudableRange()) {
+            bool isPlayerLouderThanObject = playerState.GetSoundIntensity() >= playerState.GetThrownObjectIntensity();
+            positionToChase = isPlayerLouderThanObject ? m_player.transform.position : playerState.GetThrownObjectPosition();
+            intensityToChase = isPlayerLouderThanObject ? m_fov.GetCurrentSoundIntensity() : playerState.GetThrownObjectIntensity();
+        } else if (IsPlayerInAudableRange()) {
+            positionToChase = m_player.transform.position;
+            intensityToChase = m_fov.GetCurrentSoundIntensity();
+        } else if (IsThrownObjectInAudableRange()) {
+            positionToChase = playerState.GetThrownObjectPosition();
+            intensityToChase = playerState.GetThrownObjectIntensity();
         }
         
-        if (IsPlayerInAudableRange()) {
-            if ((m_fov.GetCurrentSoundIntensity() >= mediumSoundThreshold) && (m_fov.GetCurrentSoundIntensity() < loudSoundThreshold))
+
+        if (IsPlayerInAudableRange() || IsThrownObjectInAudableRange()) {
+            if ((intensityToChase >= mediumSoundThreshold) && (intensityToChase < loudSoundThreshold))
             {
-                LookAroundForPlayer();
+                LookAroundForPlayer(positionToChase);
             }
-            else if (m_fov.GetCurrentSoundIntensity() >= loudSoundThreshold)
+            else if (intensityToChase >= loudSoundThreshold)
             {
-                ChaseThePlayer();
+                ChaseThePlayer(positionToChase);
             }
         } 
         
@@ -158,23 +174,23 @@ public class EnemyAI : MonoBehaviour
 
     private void Patrol()
     {
-        Debug.Log("I am patrolling");
+        // Debug.Log("I am patrolling");
         SetIsAlreadyPatrolling(true);
         enemySoundManager.PlayWalkingSound();
         PlayWalkingAnimation();
         SetAgentSpeed(walkSpeed/2);
 
-        if (m_waypoint.Count <= 1)
+        if (m_waypoint.Count < 1)
         {
-            Debug.Log("No waypoints");
+            // Debug.Log("No waypoints");
 
             Vector3 randomPosition = GetRandomPositionAroundPosition(startPosition, 10f);
 
             bool val = NavMesh.SamplePosition(randomPosition, out NavMeshHit hit, 2f, NavMesh.AllAreas);
 
             Vector3 pos;
-            Debug.Log("NavMeshHit: " + hit);
-            Debug.Log("Looking Around" + hit.position);
+            // Debug.Log("NavMeshHit: " + hit);
+            // Debug.Log("Looking Around" + hit.position);
             if (val)
             {
                 pos = hit.position;
@@ -182,7 +198,7 @@ public class EnemyAI : MonoBehaviour
             }
         } else {
             if (counter >= m_waypoint.Count) counter = 0;  
-            Debug.Log("Going to Waypoint: " + counter);
+            // Debug.Log("Going to Waypoint: " + counter);
             m_Agent.SetDestination(m_waypoint[counter].Position);
             counter++;
         }
@@ -198,10 +214,10 @@ public class EnemyAI : MonoBehaviour
     }
 
 
-    private void LookAroundForPlayer()
+    private void LookAroundForPlayer(Vector3 pos)
     {
         //Debug.Log("We heard something");
-        playerLastSeenLocation = m_player.transform.position;
+        playerLastSeenLocation = pos;
         enemySoundManager.PlayAlertSound();
         SetAgentSpeed(walkSpeed/2);
         PlayWalkingAnimation();
@@ -211,7 +227,7 @@ public class EnemyAI : MonoBehaviour
         SearchAroundPlayerLocation();
     }
 
-    private void ChaseThePlayer()
+    private void ChaseThePlayer(Vector3 pos)
     {
         //Debug.Log("There you are!!");
         enemySoundManager.PlayRunningSound();
@@ -219,7 +235,7 @@ public class EnemyAI : MonoBehaviour
         PlayRunningAnimation();
         timer = 0;
         SetIsWaiting(false);
-        FollowPlayer();
+        FollowPlayer(pos);
         SetIsPatrolling(false);
     }
 
@@ -237,14 +253,19 @@ public class EnemyAI : MonoBehaviour
         // FUTURE TODO: reset the sound traps on death
     }
  
-    private void FollowPlayer() {
-        playerLastSeenLocation = m_player.transform.position;
+    private void FollowPlayer(Vector3 pos) {
+        playerLastSeenLocation = pos;
         SetAgentTarget(playerLastSeenLocation);
     }
 
     private bool IsPlayerInAudableRange()
     {
         float distance = Vector3.Distance(m_player.transform.position, m_fov.transform.position);
+        return distance <= m_fov.GetSoundRadius();
+    }
+    
+    private bool IsThrownObjectInAudableRange() {
+        float distance = Vector3.Distance(m_player.GetComponent<PlayerInformation>().GetThrownObjectPosition(), m_fov.transform.position);
         return distance <= m_fov.GetSoundRadius();
     }
 

@@ -39,10 +39,10 @@ public class ItemContext : MonoBehaviour
         return storageItem.equip(InPlayerInfo);
     }
 
-    public bool executeThrow()
+    public bool executeThrow(Vector3 forwardUnitVector)
     {
         IThrowableItem throwingItem = (IThrowableItem)_Interactable;
-        return throwingItem.throwItem();
+        return throwingItem.throwItem(forwardUnitVector);
     }
 
     // TODO: Implement Feature..

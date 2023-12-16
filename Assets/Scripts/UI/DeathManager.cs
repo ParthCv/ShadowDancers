@@ -53,6 +53,9 @@ public class DeathManager : MonoBehaviour
 
     public void RemoveDamagedScreen()
     {
+        Debug.Log("Function called");
         youreInjuredText.SetActive(false);
+        InjuredScale.SetActive(false);
+        isInjured = false;
     }   
 }

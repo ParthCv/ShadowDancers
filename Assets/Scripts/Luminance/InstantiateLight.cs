@@ -45,6 +45,7 @@ public class InstantiateLight : MonoBehaviour
         // Instantiate Light at LightInstatiater_Handler position.
         // Save reference to instantiated GameObject<Light>
         light = Instantiate(light, this.transform.position, Quaternion.identity);
+        light.transform.parent = transform;
 
         if (!hasEmission)
             light.enabled = false;

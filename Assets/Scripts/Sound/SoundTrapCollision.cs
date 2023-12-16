@@ -30,7 +30,7 @@ public class SoundTrapCollision : MonoBehaviour
             player.SetSoundIntensity(collisionSoundIntensity);
             player.SetFloorSoundIntensity(collisionSoundIntensity);
             StartCoroutine(WaitForTime(temp));
-
+            GetComponent<Rigidbody>().AddForce(collision.contacts[0].normal * 100, ForceMode.Impulse);
         }
     }
 

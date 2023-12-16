@@ -9,9 +9,9 @@ public class Waypoint : MonoBehaviour
         get { return gameObject.transform.position; }
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(gameObject.transform.position, 0.5f);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.cyan;
+    //    Gizmos.DrawSphere(gameObject.transform.position, 0.5f);
+    //}
 }

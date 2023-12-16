@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4542771856297467762}
   m_Layer: 8
   m_Name: Player_withBGsounds
-  m_TagString: Untagged
+  m_TagString: PlayerParent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -36,7 +36,7 @@ Transform:
   - {fileID: 956584987577637468}
   - {fileID: 4796136545571011342}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &5129902836622307279
 Rigidbody:
@@ -600,3 +600,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interact: 0
   interactRange: 2
+  deathManager: {fileID: 0}
+  _PlayerCamera: {fileID: 0}

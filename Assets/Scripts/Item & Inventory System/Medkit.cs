@@ -6,7 +6,7 @@ using UnityEngine;
 public class Medkit : MonoBehaviour, IConsumableItem
 {
 
-    DeathManager deathManager;
+    public DeathManager deathManager;
 
     public Vector2 _InventoryShape;
 

@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 3348688}
   - component: {fileID: 2336050}
   - component: {fileID: 4221588308157995139}
-  - component: {fileID: 4656731769016533761}
+  - component: {fileID: 8565704475502453261}
+  - component: {fileID: 6517239988368105873}
   m_Layer: 9
   m_Name: ConcreteBrick
   m_TagString: Untagged
@@ -64,6 +65,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 965e421d30d6a2a419dfd5b3597456b8, type: 2}
+  - {fileID: 2100000, guid: b42934ea027903d44a8bc7a72a138a92, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -100,10 +102,11 @@ MonoBehaviour:
   _InventoryShape: {x: 2, y: 1}
   _CollisionSound: {fileID: 0}
   _DamageValue: 2
-  _BreakSound: {fileID: 0}
+  _BreakSound: {fileID: 8300000, guid: a859dd347754d3246a3b7c06ff6ec36d, type: 3}
   _InventoryColor: {r: 0.10523224, g: 1, b: 0, a: 1}
---- !u!64 &4656731769016533761
-MeshCollider:
+  _LaunchVelocity: 300
+--- !u!65 &8565704475502453261
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -120,7 +123,33 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 251d24e5670d840409f1662a859bb488, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.74606526, y: 0.3451805, z: 0.3451805}
+  m_Center: {x: 0, y: 0.19004619, z: 0}
+--- !u!54 &6517239988368105873
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123632}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 2

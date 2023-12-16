@@ -59,10 +59,13 @@ public class PlayerMovement : MonoBehaviour
         sprinting,
         crouching,
         stationary,
-        air
+        air,
+        jumping
     }
 
     public PlayerSoundManager playerSoundManager;
+
+    private bool isAboutToFall = false;
 
     private void MovementStateSoundSetter() {
         int intensity;
@@ -71,9 +74,12 @@ public class PlayerMovement : MonoBehaviour
                 intensity = 2;
                 break;
             case MovementState.sprinting:
-                intensity = 7;
+                intensity = 8;
                 break;
             case MovementState.crouching:
+                intensity = 1;
+                break;
+            case MovementState.jumping:
                 intensity = 5;
                 break;
             default:
@@ -129,6 +135,14 @@ public class PlayerMovement : MonoBehaviour
         else if (moveDirection == Vector3.zero)
         {
             state = MovementState.stationary;
+        }
+
+        // Mode - Jumping
+        else if (!grounded)
+        {
+            state = MovementState.jumping;
+
+            //Debug.Log("Jumping");
         }
 
         // Mode - Air
@@ -206,31 +220,39 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void MyInput() {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
-
-        // when to jump
-        if (Input.GetKey(jumpKey) && readyToJump && grounded) {
-            readyToJump = false;
-
-            Jump();
-
-            Invoke(nameof(ResetJump), jumpCooldown);
-        }
-
-        // start crouch
-        if (Input.GetKeyDown(crouchKey))
+        if (!PlayerExitScreen.isGameEnded)
         {
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
-            
-           //playerSoundManager.StopWalkingSound();
-        } // stop crouch
-        else if (Input.GetKeyUp(crouchKey))
+            horizontalInput = Input.GetAxisRaw("Horizontal");
+            verticalInput = Input.GetAxisRaw("Vertical");
+            // when to jump
+            if (Input.GetKey(jumpKey) && readyToJump && grounded)
+            {
+                readyToJump = false;
+
+                Jump();
+
+                Invoke(nameof(ResetJump), jumpCooldown);
+            }
+
+            // start crouch
+            if (Input.GetKeyDown(crouchKey))
+            {
+                transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+                rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+
+                //playerSoundManager.StopWalkingSound();
+            } // stop crouch
+            else if (Input.GetKeyUp(crouchKey))
+            {
+                transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+                //playerSoundManager.SetWalkingSoundPitch();
+
+            }
+        } else
         {
-            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
-            //playerSoundManager.SetWalkingSoundPitch();
-            
+            horizontalInput = 0;
+            verticalInput = 0;
+            rb.velocity = Vector3.zero;
         }
         
     }

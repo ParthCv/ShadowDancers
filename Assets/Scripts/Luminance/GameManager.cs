@@ -8,7 +8,6 @@ using UnityEngine.UI;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 using Quaternion = UnityEngine.Quaternion;
-using UnityEditorInternal;
 
 public class GameManager : MonoBehaviour
 {
@@ -172,7 +171,9 @@ public class GameManager : MonoBehaviour
                 {
                     inst.GetComponent<Image>().color = Color.grey;
                 }
-                inst.transform.parent = _Canvas.transform;
+                //inst.transform.parent = _Canvas.transform;
+                inst.transform.SetParent(_Canvas.transform);
+
 
                 if (_InventorySystem._InventoryGrid[i,j] != null)
                 {
@@ -182,6 +183,7 @@ public class GameManager : MonoBehaviour
                     UIPrefabInst.SetActive(true);
                     UIPrefabInst.transform.localScale *= 5;
                     UIPrefabInst.layer = LayerMask.NameToLayer("UI");
+                    UIPrefabInst.GetComponent<Rigidbody>().useGravity = false;
                 } 
 
             }

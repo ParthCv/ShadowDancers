@@ -15,10 +15,13 @@ public class ConcreteBrick : MonoBehaviour, IThrowableItem
     public float _DamageValue;
 
     [SerializeField]
-    public AudioSource _BreakSound;
+    public AudioClip _BreakSound;
 
     [SerializeField]
     public Color _InventoryColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+    [SerializeField]
+    public float _LaunchVelocity = 300;
 
     public float damageValue 
     {
@@ -32,7 +35,7 @@ public class ConcreteBrick : MonoBehaviour, IThrowableItem
         }
     }
 
-    public AudioSource breakSound
+    public AudioClip breakSound
     {
         get
         {
@@ -85,10 +88,14 @@ public class ConcreteBrick : MonoBehaviour, IThrowableItem
         Debug.Log("Wow. A concrete brick.");
     }
 
-    public bool throwItem()
+    public bool throwItem(Vector3 forwardUnitVector)
     {
         // TODO: Throwing Implementation.
         Debug.Log("Throw Concrete Brick");
+
+        this.gameObject.SetActive(true);
+        this.GetComponent<Rigidbody>().AddForce(forwardUnitVector * _LaunchVelocity);
+
         return true;
     }
 
@@ -103,4 +110,31 @@ public class ConcreteBrick : MonoBehaviour, IThrowableItem
     {
         
     }
+
+    public void OnCollisionExit(Collision collision)
+    {
+        Debug.Log("Concrete Brick Collision Exit!");
+        if (collision.gameObject.tag != "Player" && collision.gameObject.tag != "PlayerParent")
+        {
+            // Play the break sound here..
+            // ..
+            if (collision.gameObject.tag == "Light")
+                Destroy(collision.gameObject);
+
+            AudioSource.PlayClipAtPoint(breakSound, transform.position);
+
+            PlayerInformation playerState = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInformation>();
+
+            playerState.SetThrownObjectIntensity(9);
+            playerState.SetThrownObjectPosition(transform.position);
+
+
+            // Debugging
+            Debug.Log("Concrete Brick Collision Exit!");
+
+            // Destroy this gameobject.
+            Destroy(this.gameObject);
+        }
+    }
+
 }
